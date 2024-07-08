@@ -1,33 +1,38 @@
-using FarmaciaApi.Context;
-using FarmaciaApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Farmacia.Context;
+using Farmacia.Migrations;
 
-namespace FarmaciaApi.Controllers
+namespace Farmacia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductosController : ControllerBase
+    public class ProductoController : ControllerBase
     {
         private readonly FarmaciaContext _context;
 
-        public ProductosController(FarmaciaContext context)
+        public ProductoController(FarmaciaContext context)
         {
             _context = context;
         }
 
-        // GET: api/Productos
+        // GET: api/Producto
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            return await _context.Productos.Include(p => p.Categoria).ToListAsync();
+            return await _context.Productos.ToListAsync();
         }
 
-        // GET: api/Productos/5
-        [HttpGet("{id:int}")]
+        // GET: api/Producto/5
+        [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)
         {
-            var producto = await _context.Productos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
+            var producto = await _context.Productos.FindAsync(id);
 
             if (producto == null)
             {
@@ -37,7 +42,8 @@ namespace FarmaciaApi.Controllers
             return producto;
         }
 
-        // PUT: api/Productos/5
+        // PUT: api/Producto/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
@@ -67,7 +73,8 @@ namespace FarmaciaApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Productos
+        // POST: api/Producto
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
@@ -77,7 +84,7 @@ namespace FarmaciaApi.Controllers
             return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
         }
 
-        // DELETE: api/Productos/5
+        // DELETE: api/Producto/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
         {
