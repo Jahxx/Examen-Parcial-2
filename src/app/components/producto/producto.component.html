@@ -1,0 +1,38 @@
+<div>
+  <input [(ngModel)]="busqueda" (input)="buscarProductos()" placeholder="Buscar productos...">
+</div>
+
+<div class="product-gallery">
+  <div *ngFor="let producto of productos" (click)="selectProducto(producto)">
+    <img [src]="producto.imagen" alt="{{producto.nombre}}">
+    <h2>{{producto.nombre}}</h2>
+    <p>{{producto.descripcion}}</p>
+    <p>{{producto.precio | currency}}</p>
+    <button (click)="eliminarProducto(producto.idProducto!); $event.stopPropagation()">Eliminar</button>
+  </div>
+</div>
+
+<div *ngIf="productoSeleccionado || nuevoProducto">
+  <h3>{{ productoSeleccionado ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h3>
+  <form (ngSubmit)="guardarProducto()">
+    <label for="nombre">Nombre:</label>
+    <input id="nombre" [(ngModel)]="productoSeleccionado?.nombre || nuevoProducto.nombre" name="nombre" required>
+
+    <label for="descripcion">Descripción:</label>
+    <input id="descripcion" [(ngModel)]="productoSeleccionado?.descripcion || nuevoProducto.descripcion" name="descripcion">
+
+    <label for="precio">Precio:</label>
+    <input id="precio" type="number" [(ngModel)]="productoSeleccionado?.precio || nuevoProducto.precio" name="precio" required>
+
+    <label for="imagen">Imagen URL:</label>
+    <input id="imagen" [(ngModel)]="productoSeleccionado?.imagen || nuevoProducto.imagen" name="imagen">
+
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" [(ngModel)]="productoSeleccionado?.categoriaId || nuevoProducto.categoriaId" name="categoria" required>
+      <option *ngFor="let category of categorias" [value]="category.categoriaId">{{ category.nombre }}</option>
+    </select>
+
+    <button type="submit">{{ productoSeleccionado ? 'Actualizar' : 'Agregar' }}</button>
+    <button type="button" (click)="productoSeleccionado = null; limpiar()">Cancelar</button>
+  </form>
+</div>
